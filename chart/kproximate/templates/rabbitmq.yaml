@@ -1,0 +1,9 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: "{{ include "kproximate.fullname" . }}-rabbitmq"
+spec:
+  replicas: 1
+  tls:
+    secretName: {{ include "kproximate.fullname" . }}
+  

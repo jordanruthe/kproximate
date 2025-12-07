@@ -27,6 +27,27 @@ spec:
         - name: "{{ .Chart.Name }}-worker"
           image: "{{ .Values.image.registry }}/kproximate-worker:{{ .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env: 
+            - name: rabbitMQHost
+              valueFrom: 
+                secretKeyRef:
+                  name: "{{ include "kproximate.fullname" . }}-rabbitmq-default-user"
+                  key: host
+            - name: rabbitMQPassword
+              valueFrom: 
+                secretKeyRef:
+                  name: "{{ include "kproximate.fullname" . }}-rabbitmq-default-user"
+                  key: password
+            - name: rabbitMQPort
+              valueFrom: 
+                secretKeyRef:
+                  name: "{{ include "kproximate.fullname" . }}-rabbitmq-default-user"
+                  key: port
+            - name: rabbitMQUser
+              valueFrom: 
+                secretKeyRef:
+                  name: "{{ include "kproximate.fullname" . }}-rabbitmq-default-user"
+                  key: username
           envFrom:
           - configMapRef:
               name: {{ include "kproximate.fullname" . }}
@@ -74,6 +95,22 @@ spec:
       initContainers:
       - name: worker-wait-for-rabbitmq
         image: curlimages/curl
+        env: 
+          - name: rabbitMQHost
+            valueFrom: 
+              secretKeyRef:
+                name: "{{ include "kproximate.fullname" . }}-rabbitmq-default-user"
+                key: host
+          - name: rabbitMQPassword
+            valueFrom: 
+              secretKeyRef:
+                name: "{{ include "kproximate.fullname" . }}-rabbitmq-default-user"
+                key: password
+          - name: rabbitMQUser
+            valueFrom: 
+              secretKeyRef:
+                name: "{{ include "kproximate.fullname" . }}-rabbitmq-default-user"
+                key: username
         envFrom:
           - configMapRef:
               name: {{ include "kproximate.fullname" . }}
